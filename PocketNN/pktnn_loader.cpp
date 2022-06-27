@@ -52,8 +52,8 @@ void pktnn::pktloader::csvLoader(pktmat& saveToMat, std::string fileName) {
 }
 
 bool pktloader::file_exists(const std::string& name) {
-    FILE* pFile = NULL;
-    if (fopen_s(&pFile, name.c_str(), "r") == 0) {
+    FILE* pFile = fopen(name.c_str(), "r") ;
+    if (pFile == NULL) {
         fclose(pFile);
         return true;
     }
@@ -68,9 +68,20 @@ void pktnn::_downloadDataset(pktloader::Dataset dataset) {
         std::cout << "File already exists: " << fileName << "\n";
     } else {
         std::string diabetesUrl = "https://www4.stat.ncsu.edu/~boos/var.select/diabetes.tab.txt";
-        std::wstring wideDiabetesUrl = std::wstring(diabetesUrl.begin(), diabetesUrl.end());
-        std::wstring wideFileName = std::wstring(fileName.begin(), fileName.end());
-        URLDownloadToFile(NULL, wideDiabetesUrl.c_str(), wideFileName.c_str(), BINDF_GETNEWESTVERSION, NULL);
+//        std::wstring wideDiabetesUrl = std::wstring(diabetesUrl.begin(), diabetesUrl.end());
+//        std::wstring wideFileName = std::wstring(fileName.begin(), fileName.end());
+        CURL *curl = curl_easy_init();
+        if(curl) {
+            FILE * fp = fopen(diabetesUrl.c_str(), "wb");
+            CURLcode res;
+            curl_easy_setopt(curl, CURLOPT_URL, "https://www4.stat.ncsu.edu/~boos/var.select/diabetes.tab.txt");
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+
+            res = curl_easy_perform(curl);
+            curl_easy_cleanup(curl);
+        }
+
+//        URLDownloadToFile(NULL, wideDiabetesUrl.c_str(), wideFileName.c_str(), BINDF_GETNEWESTVERSION, NULL);
     }
 }
 

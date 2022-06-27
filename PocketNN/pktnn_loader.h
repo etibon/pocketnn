@@ -4,8 +4,9 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "urlmon.h"
-#pragma comment(lib, "urlmon.lib")
+#include <curl/curl.h>
+//#include "urlmon.h"
+//#pragma comment(lib, "urlmon.lib")
 
 #include "pktnn_mat.h"
 #include "pktnn_mat3d.h"
